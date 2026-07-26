@@ -2635,15 +2635,15 @@ function buildGridTask(tabKey, task) {
     wave.style.cssText = 'margin:0 4px;';
     for (let i = 0; i < 5; i++) { const s = document.createElement('span'); wave.appendChild(s); }
 
-    const dur = document.createElement('span');
-    dur.style.cssText = 'font-size:0.55rem;opacity:0.65;';
-    dur.textContent = fmtSec(task.audioDuration || 0);
+    const lbl = document.createElement('span');
+    lbl.style.cssText = 'font-size:0.72rem;font-weight:600;letter-spacing:0.01em;';
+    lbl.textContent = 'Voice note · ' + fmtSec(task.audioDuration || 0);
 
     playBtn.addEventListener('click', e => { e.stopPropagation(); playAudio(task, playBtn, wave); });
 
     audioRow.appendChild(playBtn);
     audioRow.appendChild(wave);
-    audioRow.appendChild(dur);
+    audioRow.appendChild(lbl);
     if (task.done) audioRow.style.opacity = '0.5';
     row.appendChild(audioRow);
   } else {
