@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Compiled binary (build from source: bash build-smriti-bar.sh)
+smriti-bar
+
+# Stub files — all live code is in index.html
+app.js
+storage.js
+style.css
+timer.js
+
+# Screenshots (provide your own)
+screenshots/
