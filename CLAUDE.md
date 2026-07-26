@@ -32,7 +32,7 @@ smriti/
 ### CSS (lines ~14–1500)
 - `:root` — global CSS vars: `--ink`, `--ink-mid`, `--ink-faint`, `--ink-ghost`, `--bg`, `--accent`, `--line-color`, `--task-font`
 - `.dark-tab` — ink overrides for dark-background palettes (currently only Paper/white triggers `dark:false`)
-- Page styles: `.ps-ruled`, `.ps-graph-fine`, `.ps-graph-large`, `.ps-dot`, `.ps-wide`, `.ps-blank`
+- Page styles: `.ps-ruled`, `.ps-graph-fine`, `.ps-graph-large`, `.ps-dot`, `.ps-blank`
 - Font: Ubuntu Mono (`--task-font`), Ubuntu (`--sans`)
 
 ### JS Constants (lines ~1648–1660)

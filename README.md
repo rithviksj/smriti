@@ -19,9 +19,6 @@ Just a file on your machine that remembers things — and looks good doing it.
 <!-- Screenshot 2: Tab view — single panel, ruled, warm cream background -->
 ![smriti tab view](screenshots/tab-view.png)
 
-<!-- Screenshot 3: README modal open — privacy pitch -->
-![smriti readme modal](screenshots/readme-modal.png)
-
 ---
 
 ## Why smriti?
@@ -45,7 +42,7 @@ It also happens to look like a proper notebook, which is a nice bonus.
 - Task text is editable inline. Click and type. That's it.
 
 ### Page styles
-Six notebook backgrounds per tab — purely decorative, text always renders on top:
+Five notebook backgrounds per tab — purely decorative, text always renders on top:
 
 | Style | What it looks like |
 |---|---|
@@ -53,7 +50,6 @@ Six notebook backgrounds per tab — purely decorative, text always renders on t
 | **Graph (fine)** | Dense grid, 10px pitch. For the engineer brain. |
 | **Graph (large)** | Spacious grid, 25px pitch. Slightly less intense. |
 | **Dot grid** | Dots at intersections. The Leuchtturm1917 of digital notebooks. |
-| **Wide ruled** | More breathing room between lines. |
 | **Blank** | Nothing. Pure color. Occasionally peaceful. |
 
 ### Color palettes
