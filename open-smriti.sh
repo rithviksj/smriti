@@ -19,6 +19,6 @@ python3 -m http.server $PORT --directory "$DIR" --bind 127.0.0.1 &>/dev/null &
 sleep 0.3
 
 open -na "Google Chrome" --args \
-  --app="http://localhost:$PORT/index.html" \
+  --app="http://localhost:$PORT/smriti.html" \
   --window-size=${PANEL_W},${PANEL_H} \
   --window-position=${POS_X},${POS_Y}

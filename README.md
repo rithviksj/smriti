@@ -29,7 +29,7 @@ Notion wants a login. Apple Notes wants iCloud. Obsidian wants a plugin ecosyste
 
 smriti wants nothing. It's a file. Open it. Write things. Close it. That's the whole product.
 
-It also looks like a notebook. You're welcome.
+It also looks like a notebook.
 
 ---
 
@@ -94,7 +94,7 @@ Your data is yours. Not "yours, stored on our servers." Yours.
 
 ### Option 1 — Just open it
 
-Download `index.html`. Open it in Chrome or Safari. Done.
+Download `smriti.html`. Open it in Chrome or Safari. Done.
 
 No install. No setup. No terminal. No npm. Nothing.
 

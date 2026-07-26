@@ -11,7 +11,7 @@ Menu bar app (`smriti-bar`) launches/focuses the panel from the macOS menu bar.
 
 ```
 smriti/
-├── index.html          ← Entire app: HTML + CSS + JS (all-in-one, intentional)
+├── smriti.html         ← Entire app: HTML + CSS + JS (all-in-one, intentional)
 ├── smriti-bar.swift    ← macOS menu bar app (Swift, NSStatusItem)
 ├── smriti-bar          ← Compiled binary (do NOT commit changes to this directly)
 ├── smriti-bar.plist    ← LaunchAgent plist for auto-start at login
@@ -23,7 +23,7 @@ smriti/
 └── timer.js            ← (stub, logic lives in index.html)
 ```
 
-**All live code is in `index.html`.** The `.js` and `.css` files are stubs/unused — do not move code into them.
+**All live code is in `smriti.html`.** The `.js` and `.css` files are stubs/unused — do not move code into them.
 
 ---
 
