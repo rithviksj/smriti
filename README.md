@@ -35,44 +35,39 @@ It also looks like a notebook.
 
 ## Features
 
-### The basics
-- **Up to 4 tabs** — each with its own title, color palette, and page style
-- **Grid view** — see all tabs at once, side by side
-- **Tab view** — focus on one tab at a time
-- Task text is editable inline. Click and type. That's it.
+**2–4 tabs**, each with its own name, color palette, and page style. Switch between **Grid view** (all tabs side by side) or **Tab view** (one at a time). Tab names are editable — click and type.
+
+---
+
+### Colors
+
+Nine warm palettes — Cream, Rose, Sage, Lavender, Sky, Terra, Slate, Honey, Paper. Pick one per tab. Background, line color, and accent all shift together.
 
 ### Page styles
-Five notebook backgrounds per tab — purely decorative, text always renders on top:
 
-| Style | What it looks like |
+| Style | |
 |---|---|
-| **Ruled** | Classic college ruled. Horizontal lines, warm-toned. |
-| **Graph (fine)** | Dense grid, 10px pitch. For the engineer brain. |
-| **Graph (large)** | Spacious grid, 25px pitch. Slightly less intense. |
-| **Dot grid** | Dots at intersections. The Leuchtturm1917 of digital notebooks. |
-| **Blank** | Nothing. Pure color. Occasionally peaceful. |
+| **Ruled** | Classic horizontal lines |
+| **Graph (fine)** | Dense 10px grid |
+| **Graph (large)** | Spacious 25px grid |
+| **Dot grid** | The Leuchtturm1917 of digital notebooks |
+| **Blank** | Pure color. Occasionally peaceful. |
 
-### Color palettes
-Nine warm palettes per tab — Cream, Rose, Sage, Lavender, Sky, Terra, Slate, Honey, Paper. Each one shifts the background, the line color, and the accent together. No jarring combinations.
+### Per-task options
 
-### Timers per task
-Each task can carry one of two timer modes:
+- **Priority** — flag a task as high priority
+- **Countdown timer** — set a duration. Turns yellow when close, red when gone, pulses at zero
+- **Deadline** — pick a date and time. Same urgency coloring.
+- **Photo** — drag or paste an image directly onto a task
+- **Voice note** — tap 🎙, say the thing, done. Plays back inline.
 
-- **Countdown** — set a duration (25 min, 2 hrs, whatever). Counts down. Turns yellow when you're getting close. Turns red when you're out of time. Pulses when it hits zero, which is both useful and mildly accusatory.
-- **Deadline** — pick a date and time. Same urgency coloring. Does not judge you for setting it to "end of week" again.
+### Completed tasks
 
-### Photos and voice notes
-- **Drag or paste an image** to pin it to a task — screenshots, receipts, anything
-- **Record a voice note** with 🎙 — plays back inline, no file management required
-
-### Archive
-Tick a task to complete it. It slides into a collapsed **Completed** section at the bottom. Expand it when you want to feel good about yourself. Delete tasks permanently when you don't.
-
-### Tab titles
-Click any tab title and type. It's editable. Name them whatever you want. The defaults are suggestions, not requirements.
+Tick a task to complete it. It slides to a **Completed** section at the bottom. Restore it anytime. Delete permanently when you're ready.
 
 ### Fonts
-Eight monospace and sans-serif options. The default is Ubuntu Mono, which was the right call.
+
+Eight options. The default is Ubuntu Mono.
 
 ---
 
