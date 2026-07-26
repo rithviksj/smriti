@@ -2,7 +2,7 @@
 # Open स्मृति as a floating sticky panel via localhost
 # Serving from localhost (not file://) lets Chrome persist mic permission across sessions.
 
-PORT=7842
+PORT=1917
 PANEL_W=782
 PANEL_H=612
 POS_X=367

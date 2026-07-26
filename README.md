@@ -118,7 +118,7 @@ For mic permissions to persist across sessions (Chrome requires a non-`file://` 
 bash open-smriti.sh
 ```
 
-Spins up a local HTTP server on port 7842 and opens smriti in Chrome app mode — no address bar, no tabs, just the app. Feels native.
+Spins up a local HTTP server on port 1917 and opens smriti in Chrome app mode — no address bar, no tabs, just the app. Feels native.
 
 ---
 
