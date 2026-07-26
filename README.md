@@ -97,9 +97,9 @@ Download `smriti.html`. Open it in Chrome or Safari. Done.
 
 No install. No setup. No terminal. No npm. Nothing.
 
-### Option 2 — Menu bar app (macOS)
+### Option 2 — Menu bar app (macOS) — recommended
 
-For the full experience: a permanent ☀ smriti button in your macOS menu bar.
+A permanent ☀ smriti button in your menu bar. The panel floats above all other windows, just like macOS Stickies.
 
 ```bash
 git clone https://github.com/rithviksj/smriti
@@ -107,18 +107,17 @@ cd smriti
 bash build-smriti-bar.sh
 ```
 
-This compiles a tiny Swift menu bar helper and installs a LaunchAgent so it starts at login.  
-Click ☀ स्मृति/smriti in the menu bar to open/focus the panel. Right-click to quit.
+Compiles a native Swift app and installs a LaunchAgent so it starts at login. No Chrome required. The panel is a real macOS floating window — always on top, visible on every Space, stays put when you switch apps.
 
-### Option 3 — Localhost mode
+Click ☀ स्मृति/smriti to show/hide. The red ✕ hides (doesn't quit). Right-click → Quit.
 
-For mic permissions to persist across sessions (Chrome requires a non-`file://` origin for mic access):
+### Option 3 — Localhost mode (legacy)
 
 ```bash
 bash open-smriti.sh
 ```
 
-Spins up a local HTTP server on port 1917 and opens smriti in Chrome app mode — no address bar, no tabs, just the app. Feels native.
+Opens smriti in Chrome app mode via a local HTTP server on port 1917. Useful if you prefer Chrome's DevTools for debugging.
 
 ---
 

@@ -1,79 +1,63 @@
 import Cocoa
+import WebKit
 
-class SmritiBar: NSObject, NSApplicationDelegate {
+class SmritiBar: NSObject, NSApplicationDelegate, NSWindowDelegate, WKUIDelegate {
     var statusItem: NSStatusItem!
+    var panel: NSPanel!
+    var webView: WKWebView!
 
-    func smritiPID() -> Int32? {
-        let t = Process()
-        t.executableURL = URL(fileURLWithPath: "/bin/bash")
-        t.arguments = ["-c", "pgrep -f 'smriti/smriti.html' | head -1"]
-        let pipe = Pipe()
-        t.standardOutput = pipe
-        try? t.run()
-        t.waitUntilExit()
-        let str = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?
-            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return Int32(str)
-    }
+    // ── Lifecycle ─────────────────────────────────────────────────
 
     func applicationDidFinishLaunching(_ n: Notification) {
+        setupMenuBar()
+        setupPanel()
+        DistributedNotificationCenter.default().addObserver(
+            self, selector: #selector(themeChanged),
+            name: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
+            object: nil)
+    }
+
+    // ── Menu Bar ──────────────────────────────────────────────────
+
+    func setupMenuBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let btn = statusItem.button {
-            btn.title = ""
             btn.image = makeGlowImage()
             btn.toolTip = "स्मृति"
             btn.target = self
             btn.action = #selector(handleClick(_:))
             btn.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
-
-        // Observe system light/dark mode changes
-        DistributedNotificationCenter.default().addObserver(
-            self,
-            selector: #selector(themeChanged),
-            name: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
-            object: nil
-        )
     }
 
-    @objc func themeChanged() {
-        statusItem.button?.image = makeGlowImage()
-    }
+    @objc func themeChanged() { statusItem.button?.image = makeGlowImage() }
 
     func isDarkMode() -> Bool {
-        return NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
     }
 
     func makeGlowImage() -> NSImage {
         let dark = isDarkMode()
-
         let shadow = NSShadow()
         shadow.shadowColor = NSColor(red: 1.0, green: 0.70, blue: 0.0, alpha: dark ? 0.85 : 0.5)
         shadow.shadowBlurRadius = dark ? 4.5 : 2.5
         shadow.shadowOffset = .zero
-
         let sunAttrs: [NSAttributedString.Key: Any] = [
             .foregroundColor: NSColor(red: 1.0, green: 0.78, blue: 0.0, alpha: 1.0),
             .font: NSFont.systemFont(ofSize: 16, weight: .medium),
             .shadow: shadow
         ]
         let labelAttrs: [NSAttributedString.Key: Any] = [
-            // Light mode: near-black for contrast. Dark mode: near-white.
             .foregroundColor: dark
                 ? NSColor(white: 1.0, alpha: 0.92)
                 : NSColor(white: 0.12, alpha: 0.88),
             .font: NSFont.systemFont(ofSize: 12, weight: .medium)
         ]
-
-        let sunStr = NSAttributedString(string: "☀ ", attributes: sunAttrs)
-        let labelStr = NSAttributedString(string: "स्मृति/smriti", attributes: labelAttrs)
         let full = NSMutableAttributedString()
-        full.append(sunStr)
-        full.append(labelStr)
-
+        full.append(NSAttributedString(string: "☀ ", attributes: sunAttrs))
+        full.append(NSAttributedString(string: "स्मृति/smriti", attributes: labelAttrs))
         let strSize = full.size()
         let canvas = NSSize(width: strSize.width + 10, height: 22)
-
         let img = NSImage(size: canvas, flipped: false) { _ in
             full.draw(at: NSPoint(x: 4, y: (canvas.height - strSize.height) / 2))
             return true
@@ -92,81 +76,81 @@ class SmritiBar: NSObject, NSApplicationDelegate {
             statusItem.button?.performClick(nil)
             statusItem.menu = nil
         } else {
-            openApp()
+            togglePanel()
         }
     }
 
-    func windowCount(pid: Int32) -> Int {
-        let s = NSAppleScript(source: """
-            tell application "System Events"
-                try
-                    tell (first process whose unix id is \(pid))
-                        return count of windows
-                    end tell
-                on error
-                    return 0
-                end try
-            end tell
-        """)
-        var err: NSDictionary?
-        let result = s?.executeAndReturnError(&err)
-        return Int(result?.int32Value ?? 0)
+    // ── Floating Panel ────────────────────────────────────────────
+
+    func setupPanel() {
+        let w: CGFloat = 782, h: CGFloat = 612
+        let screen = NSScreen.main ?? NSScreen.screens[0]
+        let sf = screen.visibleFrame
+        let origin = NSPoint(x: 367, y: sf.maxY - 45 - h)
+
+        panel = NSPanel(
+            contentRect: NSRect(origin: origin, size: NSSize(width: w, height: h)),
+            styleMask: [.titled, .closable, .resizable, .miniaturizable],
+            backing: .buffered,
+            defer: false)
+        panel.level = .floating          // always on top of normal windows
+        panel.hidesOnDeactivate = false  // stays visible when another app is focused
+        panel.isReleasedWhenClosed = false
+        panel.title = "स्मृति / smriti"
+        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        panel.delegate = self
+
+        let cfg = WKWebViewConfiguration()
+        cfg.mediaTypesRequiringUserActionForPlayback = []
+        webView = WKWebView(frame: .zero, configuration: cfg)
+        webView.uiDelegate = self
+        webView.translatesAutoresizingMaskIntoConstraints = false
+
+        let cv = panel.contentView!
+        cv.addSubview(webView)
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: cv.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: cv.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: cv.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: cv.bottomAnchor),
+        ])
+
+        loadContent()
+        panel.makeKeyAndOrderFront(nil)
     }
 
-    func killPID(_ pid: Int32) {
-        let t = Process()
-        t.executableURL = URL(fileURLWithPath: "/bin/kill")
-        t.arguments = ["-9", String(pid)]
-        try? t.run()
-        t.waitUntilExit()
+    func loadContent() {
+        let dir = URL(fileURLWithPath: CommandLine.arguments[0]).deletingLastPathComponent()
+        let html = dir.appendingPathComponent("smriti.html")
+        webView.loadFileURL(html, allowingReadAccessTo: dir)
     }
 
-    func launchFresh() {
-        let script = scriptPath()
-        let t = Process()
-        t.executableURL = URL(fileURLWithPath: "/bin/bash")
-        t.arguments = [script]
-        try? t.run()
-    }
-
-    @objc func openApp() {
-        if let pid = smritiPID(), pid > 0 {
-            if windowCount(pid: pid) > 0 {
-                if let app = NSWorkspace.shared.runningApplications.first(where: { $0.processIdentifier == pid }) {
-                    app.activate(options: .activateIgnoringOtherApps)
-                }
-                appleScript("""
-                    tell application "System Events"
-                        tell (first process whose unix id is \(pid))
-                            set frontmost to true
-                            perform action "AXRaise" of window 1
-                        end tell
-                    end tell
-                """)
-            } else {
-                killPID(pid)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    self.launchFresh()
-                }
-            }
+    @objc func togglePanel() {
+        if panel.isVisible {
+            panel.orderOut(nil)
         } else {
-            launchFresh()
+            panel.makeKeyAndOrderFront(nil)
         }
+    }
+
+    // Red close button hides the panel instead of destroying it
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        sender.orderOut(nil)
+        return false
+    }
+
+    // ── Mic permission ────────────────────────────────────────────
+
+    @available(macOS 12.0, *)
+    func webView(_ webView: WKWebView,
+                 requestMediaCapturePermissionFor origin: WKSecurityOrigin,
+                 initiatedByFrame frame: WKFrameInfo,
+                 type: WKMediaCaptureType,
+                 decisionHandler: @escaping (WKPermissionDecision) -> Void) {
+        decisionHandler(.grant)
     }
 
     @objc func quitApp() { NSApp.terminate(nil) }
-
-    func scriptPath() -> String {
-        let exe = CommandLine.arguments[0]
-        let dir = (exe as NSString).deletingLastPathComponent
-        return "\(dir)/open-smriti.sh"
-    }
-
-    func appleScript(_ src: String) {
-        let s = NSAppleScript(source: src)
-        var err: NSDictionary?
-        s?.executeAndReturnError(&err)
-    }
 }
 
 let app = NSApplication.shared

@@ -1,9 +1,10 @@
-# CLAUDE.md — स्मृति/smriti Sticky Notes App
+# CLAUDE.md — स्मृति/smriti Sticky Notes App (v2.0)
 
 ## What this is
 A self-contained sticky notes web app with a warm ruled-notebook aesthetic.
-Single `index.html` — no server, no build step, no npm. Opens via Chrome `--app=` mode.
-Menu bar app (`smriti-bar`) launches/focuses the panel from the macOS menu bar.
+Single `smriti.html` — no server, no build step, no npm.
+
+**v2.0 architecture:** The menu bar app (`smriti-bar`) now runs a native macOS `NSPanel` at `NSWindowLevel.floating` with an embedded `WKWebView`. No Chrome. No Python server. True always-on-top sticky window, just like macOS Stickies.
 
 ---
 
@@ -12,18 +13,27 @@ Menu bar app (`smriti-bar`) launches/focuses the panel from the macOS menu bar.
 ```
 smriti/
 ├── smriti.html         ← Entire app: HTML + CSS + JS (all-in-one, intentional)
-├── smriti-bar.swift    ← macOS menu bar app (Swift, NSStatusItem)
+├── smriti-bar.swift    ← macOS menu bar app (Swift, NSPanel + WKWebView, v2.0)
 ├── smriti-bar          ← Compiled binary (do NOT commit changes to this directly)
 ├── smriti-bar.plist    ← LaunchAgent plist for auto-start at login
 ├── build-smriti-bar.sh ← Compiles swift → binary, installs LaunchAgent
-├── open-smriti.sh      ← Opens index.html in Chrome app mode (682×530)
-├── app.js              ← (stub, logic lives in index.html)
-├── storage.js          ← (stub, logic lives in index.html)
-├── style.css           ← (stub, styles live in index.html)
-└── timer.js            ← (stub, logic lives in index.html)
+├── open-smriti.sh      ← Legacy: opens smriti.html in Chrome app mode via localhost
+├── app.js              ← (stub, logic lives in smriti.html)
+├── storage.js          ← (stub, logic lives in smriti.html)
+├── style.css           ← (stub, styles live in smriti.html)
+└── timer.js            ← (stub, logic lives in smriti.html)
 ```
 
 **All live code is in `smriti.html`.** The `.js` and `.css` files are stubs/unused — do not move code into them.
+
+**v2.0 panel architecture:**
+- `smriti-bar` binary = NSStatusItem (menu bar) + NSPanel (floating window) + WKWebView (loads smriti.html)
+- `NSWindowLevel.floating` → panel stays above all normal windows, like macOS Stickies
+- `hidesOnDeactivate = false` → stays visible when other apps have focus
+- `collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]` → appears on every Space
+- Red ✕ hides the panel (doesn't quit) — reopen via menu bar click
+- WKWebView localStorage is stored in `~/Library/WebKit/` — persists across launches
+- `open-smriti.sh` is still available as a standalone Chrome launcher (separate localStorage)
 
 ---
 
@@ -104,25 +114,31 @@ const PALETTES = [
 
 ---
 
-## Menu Bar App (smriti-bar.swift)
+## Menu Bar App (smriti-bar.swift) — v2.0
+
+**Architecture change (v2.0):** No longer launches Chrome. Now owns a native NSPanel with embedded WKWebView.
 
 - Detects macOS light/dark mode via `NSApp.effectiveAppearance`
 - Rebuilds icon on `AppleInterfaceThemeChangedNotification`
 - Light mode: near-black text (`white: 0.12`). Dark mode: near-white (`white: 1.0`).
-- Left click → focus/launch app. Right click → Quit menu.
-- Launches via `open-smriti.sh` which opens Chrome in `--app=` mode
+- Left click → toggle panel visibility. Right click → Quit menu.
+- `NSWindowLevel.floating` → always on top of normal app windows
+- `windowShouldClose` → hides instead of destroying (reopen from menu bar)
+- Mic permission granted automatically via `WKUIDelegate`
 
 ### Build & Install
 ```bash
-cd /Users/rjavgal/stickies
+cd /Users/rjavgal/smriti
 bash build-smriti-bar.sh
 ```
 
-### Launch app manually
+Window size: 782×612. Position: 367px from left, 45px from screen top.
+
+### Legacy Chrome mode (optional)
 ```bash
 bash open-smriti.sh
 ```
-Window size: 782×612. Position: 367,45 (matched to Rithvik's actual running window, 2026-07-26).
+Opens smriti.html via localhost:1917 in Chrome app mode. Uses Chrome's own localStorage — separate from WKWebView's.
 
 ---
 
@@ -135,8 +151,9 @@ Window size: 782×612. Position: 367,45 (matched to Rithvik's actual running win
 5. **Dark palette support**: set `dark: true` on palette entry → `.dark-tab` class applied → ink vars override
 6. **Night (black) palette is removed** — do not re-add without solving all dark-mode UI visibility issues first
 7. **Red ✕ always visible** (`opacity: 0.45`) — never set to `opacity: 0` (hidden until hover)
-8. **Menu bar changes** require recompile: `bash build-smriti-bar.sh`
-9. **No npm, no build, no server** — this is a local file://  app, keep it that way
+8. **Menu bar changes** require recompile: `bash build-smriti-bar.sh` (kills old instance, reloads LaunchAgent)
+9. **No npm, no build, no server** — this is a `file://` app. The WKWebView loads smriti.html directly. No Python server needed for the main path.
+10. **WKWebView localStorage** ≠ Chrome localStorage. Data does not share between the two launch modes.
 
 ---
 
