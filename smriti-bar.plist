@@ -6,7 +6,7 @@
     <string>com.rjavgal.smriti-bar</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/rjavgal/stickies/smriti-bar</string>
+        <string>/Users/rjavgal/smriti/smriti-bar</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

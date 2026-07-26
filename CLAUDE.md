@@ -10,7 +10,7 @@ Menu bar app (`smriti-bar`) launches/focuses the panel from the macOS menu bar.
 ## File Structure
 
 ```
-stickies/
+smriti/
 ├── index.html          ← Entire app: HTML + CSS + JS (all-in-one, intentional)
 ├── smriti-bar.swift    ← macOS menu bar app (Swift, NSStatusItem)
 ├── smriti-bar          ← Compiled binary (do NOT commit changes to this directly)
