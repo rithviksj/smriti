@@ -105,6 +105,11 @@ class SmritiBar: NSObject, NSApplicationDelegate, NSWindowDelegate, WKUIDelegate
         webView = WKWebView(frame: .zero, configuration: cfg)
         webView.uiDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
+        // Force Retina-resolution rendering
+        webView.wantsLayer = true
+        if let scale = NSScreen.main?.backingScaleFactor {
+            webView.layer?.contentsScale = scale
+        }
 
         let cv = panel.contentView!
         cv.addSubview(webView)
