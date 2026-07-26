@@ -11,7 +11,7 @@ POS_Y=45
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Kill any stale smriti server on this port
-pkill -f "python3 -m http.server $PORT" 2>/dev/null || true
+pkill -f "http.server $PORT" 2>/dev/null || true
 sleep 0.2
 
 # Start local-only HTTP server (127.0.0.1 — not reachable from LAN)
