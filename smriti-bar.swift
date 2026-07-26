@@ -6,7 +6,7 @@ class SmritiBar: NSObject, NSApplicationDelegate {
     func smritiPID() -> Int32? {
         let t = Process()
         t.executableURL = URL(fileURLWithPath: "/bin/bash")
-        t.arguments = ["-c", "pgrep -f 'stickies/index.html' | head -1"]
+        t.arguments = ["-c", "pgrep -f 'smriti/smriti.html' | head -1"]
         let pipe = Pipe()
         t.standardOutput = pipe
         try? t.run()
