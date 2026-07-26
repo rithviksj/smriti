@@ -25,11 +25,11 @@ Just a file on your machine that remembers things — and looks good doing it.
 
 Every notes app eventually wants something from you.
 
-Notion wants a login. Apple Notes wants iCloud. Obsidian wants a plugin ecosystem. Bear wants £2.99/month.
+Notion wants a login. Apple Notes wants iCloud. Obsidian wants a plugin ecosystem. Bear wants $2.99/month.
 
-smriti wants nothing. It is a file. You own it completely. It will never ask you to upgrade, sync, connect, or subscribe. It will be exactly as functional in 10 years as it is today, because HTML doesn't expire.
+smriti wants nothing. It's a file. Open it. Write things. Close it. That's the whole product.
 
-It also happens to look like a proper notebook, which is a nice bonus.
+It also looks like a notebook. You're welcome.
 
 ---
 
