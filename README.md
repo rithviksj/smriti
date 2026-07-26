@@ -69,6 +69,10 @@ Tick a task to complete it. It slides to a **Completed** section at the bottom. 
 
 Eight options. The default is Ubuntu Mono.
 
+### Private by design
+
+No server. No account. No tracking. Your notes live in your browser's `localStorage` — on your machine, invisible to everyone else. Works offline, always. Nothing leaves without you knowing.
+
 ---
 
 ## Privacy
