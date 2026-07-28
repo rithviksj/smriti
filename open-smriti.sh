@@ -39,8 +39,8 @@ if ! lsof -i :$PORT -sTCP:LISTEN &>/dev/null 2>&1; then
   sleep 0.3
 fi
 
-# Open smriti in Chrome app mode (no -n so macOS won't force a new instance)
-open -a "Google Chrome" --args \
+# Open smriti in Chrome app mode (-n needed so Chrome opens a new app window, not just focus existing tabs)
+open -na "Google Chrome" --args \
   --app="http://localhost:$PORT/smriti.html" \
   --window-size=${PANEL_W},${PANEL_H} \
   --window-position=${POS_X},${POS_Y}
