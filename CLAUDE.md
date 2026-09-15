@@ -15,8 +15,7 @@ smriti/
 ├── smriti.html         ← Entire app: HTML + CSS + JS (all-in-one, intentional)
 ├── smriti-bar.swift    ← macOS menu bar app (Swift, NSPanel + WKWebView, v2.0)
 ├── smriti-bar          ← Compiled binary (do NOT commit changes to this directly)
-├── smriti-bar.plist    ← LaunchAgent plist for auto-start at login
-├── build-smriti-bar.sh ← Compiles swift → binary, installs LaunchAgent
+├── build-smriti-bar.sh ← Compiles swift → binary, generates LaunchAgent plist + installs it
 ├── open-smriti.sh      ← Legacy: opens smriti.html in Chrome app mode via localhost
 ├── app.js              ← (stub, logic lives in smriti.html)
 ├── storage.js          ← (stub, logic lives in smriti.html)

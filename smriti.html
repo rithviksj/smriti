@@ -85,9 +85,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  background-color: var(--bg);
   box-shadow: 0 1px 48px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.05);
-  transition: background-color 0.25s;
 }
 
 /* ── Brand strip ─────────────────────────────────────────────── */
@@ -1646,16 +1645,10 @@ mark {
     </div>
     <div id="header-controls">
       <button id="snooze-monkey" title="Snooze for 15 minutes" aria-label="Snooze">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-linecap="round">
-        <circle cx="50" cy="50" r="23.7" stroke="#e03535" stroke-width="5.0" opacity="0.92"/>
-        <circle cx="50" cy="50" r="23.7" stroke="#e03535" stroke-width="1.2" opacity="0.38"/>
-        <circle cx="50" cy="50" r="17.6" stroke="#e8831a" stroke-width="4.5" opacity="0.92"/>
-        <circle cx="50" cy="50" r="17.6" stroke="#e8831a" stroke-width="1.0" opacity="0.35"/>
-        <circle cx="50" cy="50" r="11.7" stroke="#3aab45" stroke-width="4.2" opacity="0.92"/>
-        <circle cx="50" cy="50" r="11.7" stroke="#3aab45" stroke-width="1.0" opacity="0.35"/>
-        <circle cx="50" cy="50" r="5.5"  stroke="#2a72d6" stroke-width="4.0" opacity="0.92"/>
-        <circle cx="50" cy="50" r="5.5"  stroke="#2a72d6" stroke-width="1.0" opacity="0.35"/>
-        <circle cx="50" cy="50" r="1.4"  fill="#2a72d6"   stroke="none"     opacity="1.0"/>
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <circle cx="50" cy="50" r="24" stroke="#e03535" stroke-width="7" opacity="0.90"/>
+        <circle cx="50" cy="50" r="14" stroke="#e8831a" stroke-width="7" opacity="0.90"/>
+        <circle cx="50" cy="50" r="5"  fill="#3aab45"   stroke="none"   opacity="1.0"/>
       </svg>
       </button>
       <select id="font-select" class="ctrl-select" title="Task font">
@@ -1676,6 +1669,7 @@ mark {
       </select>
       <button id="view-toggle" title="Switch view">Grid</button>
       <button id="readme-btn" title="About स्मृति">ℹ</button>
+      <button id="add-tab-btn" class="tab-add-btn" title="Add new tab (max 4)" style="display:none">+</button>
       <a id="dl-btn" class="hctl" href="index.html" download="smriti.html" title="Download to share">&#8595;</a>
     </div>
   </div>
@@ -2307,6 +2301,8 @@ function scaleRgbaAlpha(rgba, scale) {
 function render() {
   const tab = currentTab();
   const lineScale = (tab.lineAlphaScale ?? 1.0);
+  document.documentElement.style.setProperty('--bg', tab.bg);
+  document.documentElement.style.setProperty('--accent', tab.accent);
   notebook.style.setProperty('--bg', tab.bg);
   notebook.style.setProperty('--line-color', scaleRgbaAlpha(tab.lineColor, lineScale));
   notebook.style.setProperty('--accent', tab.accent);
@@ -2567,14 +2563,14 @@ function buildTabs() {
     tabsEl.appendChild(btn);
   }
 
-  // "+" add tab button (when < 4 tabs)
-  if (order.length < 4) {
-    const addBtn = document.createElement('button');
-    addBtn.className = 'tab-add-btn';
-    addBtn.textContent = '+';
-    addBtn.title = 'Add new tab (max 4)';
-    addBtn.addEventListener('click', () => addTab());
-    tabsEl.appendChild(addBtn);
+  // Show/hide static "+" add tab button in header
+  const addTabBtn = $('add-tab-btn');
+  if (addTabBtn) {
+    addTabBtn.style.display = order.length < 4 ? '' : 'none';
+    if (!addTabBtn._wired) {
+      addTabBtn.addEventListener('click', () => addTab());
+      addTabBtn._wired = true;
+    }
   }
 
   // Sync view-toggle disabled state
@@ -2849,6 +2845,7 @@ function buildGridView() {
     const body = document.createElement('div');
     body.className = 'grid-panel-body ps-' + (tab.pageStyle || 'ruled');
     body.style.setProperty('--bg', tab.bg);
+    body.style.backgroundColor = tab.bg;
     body.style.setProperty('--line-color', scaleRgbaAlpha(tab.lineColor, tab.lineAlphaScale ?? 1.0));
     body.style.setProperty('--line-pitch', pagePitch(tab.pageStyle || 'ruled') + 'px');
 
@@ -3050,6 +3047,10 @@ function buildGridView() {
         e.stopPropagation();
         tab.bg = p.bg; tab.accent = p.accent; tab.lineColor = p.lineColor;
         tab.dark = p.dark ?? false;
+        document.documentElement.style.setProperty('--bg', p.bg);
+        document.documentElement.style.setProperty('--accent', p.accent);
+        const appEl = document.getElementById('app');
+        if (appEl) appEl.style.backgroundColor = p.bg;
         saveData();
         buildGridView();
       });
