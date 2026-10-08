@@ -1,0 +1,21 @@
+.gitignore
+  s_39201929c159c3::t_1ab8df82586fc9 15
+smriti.html
+  s_39201929c159c3::t_80f543d673bbb2 1990-2007
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "512323b90db140c0ef92f0d7807562641ef78102",
+  "prompts": {},
+  "sessions": {
+    "s_39201929c159c3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7ce95b2a-cf9c-4f30-aee4-2766e9077a07",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "rithvik s javgal <rithviksj@gmail.com>"
+    }
+  }
+}
