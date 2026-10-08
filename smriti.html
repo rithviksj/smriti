@@ -1987,6 +1987,24 @@ function badgeInfo(task) {
   return { label: '◷ ' + fmtMs(rem), cls };
 }
 
+// ── One-time migration seed ────────────────────────────────────────────────
+// On a brand-new install/machine (no smriti_v2 key yet), look for an optional
+// local smriti-seed.json (untracked, never committed) and load it in before
+// the fresh-install placeholder tasks would otherwise win. No-op once real
+// data exists, and silently does nothing if no seed file is present.
+(function seedFromMigrationFileIfEmpty() {
+  try {
+    if (localStorage.getItem(STORAGE_KEY) || localStorage.getItem('smriti_v1')) return;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'smriti-seed.json', false); // sync — must finish before loadData() runs
+    xhr.send(null);
+    if (xhr.status === 200 && xhr.responseText) {
+      JSON.parse(xhr.responseText); // validate before committing to storage
+      localStorage.setItem(STORAGE_KEY, xhr.responseText);
+    }
+  } catch (e) { /* no seed file, or invalid — fall through to normal fresh-install behavior */ }
+})();
+
 // ── App state ────────────────────────────────────────────────────────────────
 let data          = loadData();
 let activeTimerId = null;
