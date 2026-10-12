@@ -1,0 +1,26 @@
+smriti-bar.swift
+  s_39201929c159c3::t_2cf636d5c894f0 85-118
+  s_39201929c159c3::t_becf061795cdbf 165
+  s_39201929c159c3::t_715dd8a858788e 166-167
+  s_39201929c159c3::t_a8c77d5af5ab60 139-141
+build-smriti-bar.sh
+  s_39201929c159c3::t_8775fcac38dc39 6-9,14-21,26-52,67-71
+.gitignore
+  s_39201929c159c3::t_681ef59211c46c 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "39e7f19273b3ee4af6dcac8683e292d1eef9c461",
+  "prompts": {},
+  "sessions": {
+    "s_39201929c159c3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7ce95b2a-cf9c-4f30-aee4-2766e9077a07",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "rithvik s javgal <rithviksj@gmail.com>"
+    }
+  }
+}
