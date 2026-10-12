@@ -82,6 +82,40 @@ class SmritiBar: NSObject, NSApplicationDelegate, NSWindowDelegate, WKUIDelegate
 
     // ── Floating Panel ────────────────────────────────────────────
 
+    // Project dir (smriti.html, smriti-seed.json) is external to the .app
+    // bundle — passed via env var by build-smriti-bar.sh's LaunchAgent so
+    // this stays portable across machines/usernames.
+    func projectDirectory() -> URL {
+        let fallback = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("smriti")
+        return ProcessInfo.processInfo.environment["SMRITI_PROJECT_DIR"]
+            .map { URL(fileURLWithPath: $0) } ?? fallback
+    }
+
+    // Reads smriti-seed.json (untracked, machine-local — never committed) and,
+    // if present, injects it as a WKUserScript that runs before smriti.html's
+    // own JS, directly setting localStorage. Done natively rather than via an
+    // in-page fetch/XHR because WKWebView restricts those for file:// origins
+    // — a native file read has no such restriction.
+    func migrationSeedScript() -> WKUserScript? {
+        let seedFile = projectDirectory().appendingPathComponent("smriti-seed.json")
+        guard let raw = try? String(contentsOf: seedFile, encoding: .utf8),
+              (try? JSONSerialization.jsonObject(with: Data(raw.utf8))) != nil
+        else { return nil }
+        let encoded = raw.data(using: .utf8)!.base64EncodedString()
+        let js = """
+        (function() {
+          try {
+            if (localStorage.getItem('smriti_v2') || localStorage.getItem('smriti_v1')) return;
+            var json = atob('\(encoded)');
+            JSON.parse(json); // validate
+            localStorage.setItem('smriti_v2', json);
+            localStorage.setItem('stickies_v2', json);
+          } catch (e) { /* malformed seed — leave storage untouched */ }
+        })();
+        """
+        return WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+    }
+
     func setupPanel() {
         let w: CGFloat = 782, h: CGFloat = 612
         let screen = NSScreen.main ?? NSScreen.screens[0]
@@ -102,6 +136,9 @@ class SmritiBar: NSObject, NSApplicationDelegate, NSWindowDelegate, WKUIDelegate
 
         let cfg = WKWebViewConfiguration()
         cfg.mediaTypesRequiringUserActionForPlayback = []
+        if let seedScript = migrationSeedScript() {
+            cfg.userContentController.addUserScript(seedScript)
+        }
         webView = WKWebView(frame: .zero, configuration: cfg)
         webView.uiDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
@@ -125,9 +162,9 @@ class SmritiBar: NSObject, NSApplicationDelegate, NSWindowDelegate, WKUIDelegate
     }
 
     func loadContent() {
-        let dir = URL(fileURLWithPath: CommandLine.arguments[0]).deletingLastPathComponent()
-        let html = dir.appendingPathComponent("smriti.html")
-        webView.loadFileURL(html, allowingReadAccessTo: dir)
+        let projectDir = projectDirectory()
+        let html = projectDir.appendingPathComponent("smriti.html")
+        webView.loadFileURL(html, allowingReadAccessTo: projectDir)
     }
 
     @objc func togglePanel() {

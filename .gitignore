@@ -5,6 +5,7 @@
 
 # Compiled binary (build from source: bash build-smriti-bar.sh)
 smriti-bar
+SmritiBar.app
 
 # Stub files — all live code is in index.html
 app.js
