@@ -15,6 +15,17 @@ class SmritiBar: NSObject, NSApplicationDelegate, NSWindowDelegate, WKUIDelegate
             self, selector: #selector(themeChanged),
             name: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
             object: nil)
+        // Recurring macOS bug: on wake-from-sleep, the menu bar recalculates
+        // available width and this status item (no stable system-level slot
+        // the way bundled/signed apps get) silently loses the space lottery
+        // and drops into the hidden overflow area — the process itself never
+        // crashes, so launchd/KeepAlive never notices anything is wrong.
+        // Fix: rebuild the status item fresh a couple seconds after every
+        // wake, once the menu bar layout has settled.
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self, selector: #selector(handleWake),
+            name: NSWorkspace.didWakeNotification,
+            object: nil)
     }
 
     // ── Menu Bar ──────────────────────────────────────────────────
@@ -27,6 +38,16 @@ class SmritiBar: NSObject, NSApplicationDelegate, NSWindowDelegate, WKUIDelegate
             btn.target = self
             btn.action = #selector(handleClick(_:))
             btn.sendAction(on: [.leftMouseUp, .rightMouseUp])
+        }
+    }
+
+    @objc func handleWake() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            guard let self else { return }
+            if let old = self.statusItem {
+                NSStatusBar.system.removeStatusItem(old)
+            }
+            self.setupMenuBar()
         }
     }
 
